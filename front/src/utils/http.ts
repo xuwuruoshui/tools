@@ -16,10 +16,10 @@ export interface ResultData<T = any> extends Result {
 const URL: string = 'http://192.168.2.39:8888'
 enum RequestEnums {
     TIMEOUT = 20000,
-    StatusUnauthorized = 401, // 登录失效
-    Forbidden = 403, // 请求失败
-    InternalServerError = 500, // 服务器错误
-    BadGateway = 502, // 服务器错误
+    // StatusUnauthorized = 401, // 登录失效
+    // Forbidden = 403, // 请求失败
+    // InternalServerError = 500, // 服务器错误
+    // BadGateway = 502, // 服务器错误
     SUCCESS = 200, // 请求成功
 }
 const config = {
@@ -76,27 +76,6 @@ class RequestHttp {
         this.service.interceptors.response.use(
             (response: AxiosResponse) => {
                 const {data, config} = response; // 解构
-                if (data.code === RequestEnums.StatusUnauthorized) {
-                    // 登录信息失效，应跳转到登录页面，并清空本地的token
-                    ElMessage.error("登录过期,请重新登录"); // 此处也可以使用组件提示报错信息
-                    localStorage.setItem('token', '');
-                    router.replace({
-                        path: '/login'
-                    })
-                    return Promise.reject(data);
-                }
-                if (data.status==RequestEnums.StatusUnauthorized){
-                    ElMessage.error("没权限"); // 此处也可以使用组件提示报错信息
-                    return Promise.reject(data)
-                }
-                if (data.status==RequestEnums.BadGateway){
-                    ElMessage.error("网关对应服务找不到"); // 此处也可以使用组件提示报错信息
-                    return Promise.reject(data)
-                }
-                if (data.status==RequestEnums.InternalServerError){
-                    ElMessage.error("服务器错误"); // 此处也可以使用组件提示报错信息
-                    return Promise.reject(data)
-                }
                 // 全局错误信息拦截（防止下载文件得时候返回数据流，没有code，直接报错）
                 if (data.code && data.code !== RequestEnums.SUCCESS) {
                     ElMessage.error(data.msg); // 此处也可以使用组件提示报错信息
@@ -123,6 +102,15 @@ class RequestHttp {
         switch(code) {
             case 401:
                 ElMessage.error('登录失败，请重新登录');
+                break;
+            case 403:
+                ElMessage.error('权限不足');
+                break;
+            case 500:
+                ElMessage.error('服务器错误');
+                break;
+            case 502:
+                ElMessage.error('网关错误');
                 break;
             default:
                 ElMessage.error('请求失败');
