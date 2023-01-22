@@ -3,53 +3,59 @@ package usecase
 import (
 	"context"
 	"end/domain"
+	"end/repository"
 	"errors"
 	"time"
 )
 
 
 type UserUseCase struct {
-	userRepository domain.UserRepository[domain.User]
+	userRepository repository.UserRepository[domain.User]
 	contextTimeout time.Duration
 }
 
-func NewUserusecase(userepository domain.UserRepository[domain.User],tm time.Duration) UserUseCase{
+func NewUserusecase(userepository repository.UserRepository[domain.User], tm time.Duration) UserUseCase {
 	return UserUseCase{
 		userRepository: userepository,
 		contextTimeout: tm,
 	}
 }
 
-
-func(u *UserUseCase) GetUser(c context.Context, id string) (*domain.User,error){
+func(u *UserUseCase) GetById(c context.Context, id string) (*domain.User,error){
 	ctx, cancel := context.WithTimeout(c, u.contextTimeout)
 	defer cancel()
-	return u.userRepository.GetUser(ctx,id)
+	return u.userRepository.GetById(ctx,id)
 }
 
-func(u *UserUseCase) GetUserList(c context.Context,condition domain.PageDomain[domain.User]) (*domain.ListDomain[domain.User],error){
+func(u *UserUseCase) GetAllList(c context.Context,condition domain.PageDomain[domain.User]) (*domain.ListDomain[domain.User],error){
 	ctx, cancel := context.WithTimeout(c, u.contextTimeout)
 	defer cancel()
-	return u.userRepository.GetUserList(ctx,condition)
-}
-func(u *UserUseCase) CreateUser(c context.Context, user domain.User) (*domain.RowAffect,error){
-	ctx, cancel := context.WithTimeout(c, u.contextTimeout)
-	defer cancel()
-	return u.userRepository.CreateUser(ctx,user)
+	return u.userRepository.GetAllList(ctx,condition)
 }
 
-func(u *UserUseCase) UpdateUser(c context.Context,  user domain.User) (*domain.RowAffect,error){
+func(u *UserUseCase) Create(c context.Context, user domain.User) (*domain.RowAffect,error){
+	ctx, cancel := context.WithTimeout(c, u.contextTimeout)
+	defer cancel()
+	return u.userRepository.Create(ctx,user)
+}
+
+func(u *UserUseCase) Update(c context.Context,  user domain.User) (*domain.RowAffect,error){
 	ctx, cancel := context.WithTimeout(c, u.contextTimeout)
 	defer cancel()
 	if user.Id==""{
 		return &domain.RowAffect{},errors.New("参数不完整")
 	}
-	return u.userRepository.UpdateUser(ctx,user)
+	return u.userRepository.Update(ctx,user)
 }
 
-func(u *UserUseCase) DeleteUser(c context.Context, id string) (*domain.RowAffect,error){
+func(u *UserUseCase) Delete(c context.Context, id string) (*domain.RowAffect,error){
 	ctx, cancel := context.WithTimeout(c, u.contextTimeout)
 	defer cancel()
-	return u.userRepository.DeleteUser(ctx,id)
+	return u.userRepository.Delete(ctx,id)
 }
 
+func(u *UserUseCase) GetList(c context.Context,condition domain.PageDomain[domain.User]) (*domain.ListDomain[domain.User],error){
+	ctx, cancel := context.WithTimeout(c, u.contextTimeout)
+	defer cancel()
+	return u.userRepository.GetList(ctx, condition)
+}

@@ -1,7 +1,8 @@
 package domain
 
 import (
-	"context"
+	"end/utils"
+	"gorm.io/gorm"
 )
 
 type User struct {
@@ -12,11 +13,16 @@ type User struct {
 	Phone string `json:"phone,omitempty" gorm:"type:varchar(30);not null;index:idx_phone;"`
 }
 
-type UserRepository[T User] interface {
-	GetUser(context.Context, string) (*User,error)
-	GetUserList(context.Context, PageDomain[T]) (*ListDomain[T],error)
-	CreateUser(context.Context, User) (*RowAffect,error)
-	UpdateUser(context.Context, User) (*RowAffect,error)
-	DeleteUser(context.Context, string) (*RowAffect,error)
+func (u User) TableName() string{
+	return "user"
+}
+
+func(u User) GetId()string{
+	return u.Id
+}
+
+func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
+	u.Id = utils.GenerateId()
+	return
 }
 

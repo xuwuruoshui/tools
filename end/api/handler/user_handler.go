@@ -18,7 +18,7 @@ type UserHandler struct {
 func (h *UserHandler) GetUser(c *gin.Context) {
 
 	id := c.Param("id")
-	u ,err := h.UserUsecase.GetUser(c,id)
+	u ,err := h.UserUsecase.GetById(c,id)
 	if err!=nil{
 		c.JSON(http.StatusNotFound, u)
 		return
@@ -34,11 +34,15 @@ func (h *UserHandler) GetUserList(c *gin.Context) {
 	pageSize, _ := strconv.Atoi(pageSizeStr)
 	pageNo, _ := strconv.Atoi(pageNoStr)
 
-	//phone := c.Query("phone")
+	var user domain.User
+	err := c.ShouldBindQuery(&user)
+	if err != nil {
+		panic(err)
+	}
 
-	u ,_ := h.UserUsecase.GetUserList(c,domain.PageDomain[domain.User]{
-		PageSize: int32(pageSize),
-		PageNo: int32(pageNo),
+	u ,_ := h.UserUsecase.GetList(c,domain.PageDomain[domain.User]{
+		PageSize: pageSize,
+		PageNo: pageNo,
 		Condition: domain.User{},
 	})
 	c.JSON(http.StatusOK, u)
@@ -51,7 +55,7 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	u ,err := h.UserUsecase.CreateUser(c,user)
+	u ,err := h.UserUsecase.Create(c,user)
 	if err!=nil{
 		c.JSON(http.StatusNotFound, u)
 		return
@@ -66,7 +70,7 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	res ,err := h.UserUsecase.UpdateUser(c,user)
+	res ,err := h.UserUsecase.Update(c,user)
 	if err!=nil{
 		c.JSON(http.StatusNotFound, res)
 		return
@@ -77,7 +81,7 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 func (h *UserHandler) DeleteUser(c *gin.Context) {
 
 	ids := c.Param("ids")
-	res ,err := h.UserUsecase.DeleteUser(c,ids)
+	res ,err := h.UserUsecase.Delete(c,ids)
 	if err!=nil{
 		c.JSON(http.StatusNotFound, res)
 		return

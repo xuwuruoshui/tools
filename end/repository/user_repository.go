@@ -4,77 +4,57 @@ import (
 	"context"
 	"end/bootstrap"
 	"end/domain"
-	"end/utils"
 	"gorm.io/gorm"
-	"strings"
 )
 
+type UserRepository[T domain.User] interface {
+	// 实现通用Mapper
+	Repository[T]
+
+	// 自己实现的接口
+	GetList(context.Context,domain.PageDomain[T])(*domain.ListDomain[T],error)
+}
+
 type userRepository struct {
-	App *bootstrap.App
+	BaseRepository[domain.User]
 }
 
-func NewUserRepository(app *bootstrap.App)domain.UserRepository[domain.User] {
-	return &userRepository{App: app}
+func NewUserRepository(app *bootstrap.App) UserRepository[domain.User] {
+	repository := &userRepository{}
+	repository.App = app
+	return repository
 }
 
-
-func(u *userRepository) GetUser(c context.Context, id string) (*domain.User,error){
-
-	db := u.App.DBClient.(*bootstrap.MySqlClient).DB
-	user := &domain.User{}
-	tx := db.First(user, id)
-	if tx.Error!=nil && tx.Error!=gorm.ErrRecordNotFound{
-		return nil,tx.Error
-	}
-	return user,nil
-}
-
-func (u *userRepository) GetUserList(c context.Context, p domain.PageDomain[domain.User]) (*domain.ListDomain[domain.User], error) {
+func (u userRepository) GetList(ctx context.Context,p domain.PageDomain[domain.User])(*domain.ListDomain[domain.User],error){
 	db := u.App.DBClient.(*bootstrap.MySqlClient).DB
 
-	var userList domain.ListDomain[domain.User]
-	var users []*domain.User
+	var tList domain.ListDomain[domain.User]
+	var ts []*domain.User
 	var total int64
 
-	tx := db.Model(domain.User{}).Count(&total).Offset(int(p.PageNo)).Limit(int(p.PageSize)).Find(&users)
-	if tx.Error!=nil  && tx.Error!=gorm.ErrRecordNotFound{
-		return nil,tx.Error
+	condition := db.Model(domain.User{})
+
+
+	if p.Condition.Id!=""{
+		condition.Where("id = ?",p.Condition.Id)
 	}
-	userList.List = users
-	userList.Total = total
-
-	return &userList,nil
-}
-
-func (u *userRepository) CreateUser(c context.Context, user domain.User) (*domain.RowAffect, error) {
-	db := u.App.DBClient.(*bootstrap.MySqlClient).DB
-	user.Id = utils.GenerateId()
-	tx := db.Create(&user)
-	if tx.Error!=nil  && tx.Error!=gorm.ErrRecordNotFound{
-		return nil,tx.Error
+	if p.Condition.Age!=nil{
+		condition.Where("age = ?",p.Condition.Age)
 	}
-	return &domain.RowAffect{Id: user.Id, Affect: tx.RowsAffected},nil
-}
-
-func (u *userRepository) UpdateUser(c context.Context, user domain.User) (*domain.RowAffect, error) {
-	db := u.App.DBClient.(*bootstrap.MySqlClient).DB
-
-	tx := db.Updates(user)
-	if tx.Error!=nil  && tx.Error!=gorm.ErrRecordNotFound{
-		return nil,tx.Error
+	if p.Condition.Phone!=""{
+		condition.Where("phone = ?",p.Condition.Phone)
 	}
-	return &domain.RowAffect{Id: user.Id, Affect: tx.RowsAffected},nil
-}
-
-func (u *userRepository) DeleteUser(c context.Context, idsStr string) (*domain.RowAffect, error) {
-	db := u.App.DBClient.(*bootstrap.MySqlClient).DB
-
-	ids := strings.Split(idsStr, ",")
-	tx := db.Delete(&domain.User{}, ids)
-	if tx.Error!=nil  && tx.Error!=gorm.ErrRecordNotFound{
-		return nil,tx.Error
+	if p.Condition.Email!=""{
+		condition.Where("email = ?",p.Condition.Email)
 	}
-	return &domain.RowAffect{Id:idsStr, Affect: tx.RowsAffected},nil
+	condition.Count(&total)
+	if condition.Error!=nil  && condition.Error!=gorm.ErrRecordNotFound{
+		return nil,condition.Error
+	}
+	condition.Scopes(domain.Paginate(p.PageNo,p.PageSize)).Find(&ts)
+
+	tList.List = ts
+	tList.Total = total
+
+	return &tList,nil
 }
-
-
