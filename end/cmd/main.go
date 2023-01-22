@@ -1,9 +1,9 @@
 package main
 
 import (
-	"end/internal"
+	"end/api/router"
+	"end/bootstrap"
 	"end/middleware"
-	"end/router"
 	"github.com/gin-gonic/gin"
 	"os"
 	"os/signal"
@@ -15,7 +15,7 @@ func main() {
 
 	r.Use(middleware.CrossDomain)
 
-	app := internal.NewApp()
+	app := bootstrap.NewApp()
 
 	router.Routers(r, app)
 

@@ -1,4 +1,4 @@
-package internal
+package bootstrap
 
 import (
 	"github.com/spf13/viper"
@@ -19,7 +19,7 @@ func NewApp() *App {
 	if err != nil {
 		panic(err)
 	}
-	err = v.Unmarshal(&Config{})
+	err = v.Unmarshal(&config)
 	if err != nil {
 		panic(err)
 	}

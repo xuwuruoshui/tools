@@ -1,6 +1,7 @@
-package internal
+package bootstrap
 
 import (
+	"end/domain"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -15,6 +16,7 @@ type DB struct {
 	Name     string `mapstructure:"name" yaml:"name"`
 	Host     string `mapstructure:"host" yaml:"host"`
 	Port     int32  `mapstructure:"port" yaml:"port"`
+	Category string `mapstructure:"category" yaml:"category"`
 	Username string `mapstructure:"username" yaml:"username"`
 	Password string `mapstructure:"password" yaml:"password"`
 }
@@ -51,5 +53,9 @@ func (m *MySqlClient) ConnectDB(cfg *Config) {
 		panic("Mysql connect faild:" + err.Error())
 	}
 
+	err = db.AutoMigrate(&domain.User{})
+	if err != nil {
+		panic(err)
+	}
 	m.DB = db
 }
