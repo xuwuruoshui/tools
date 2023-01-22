@@ -1,4 +1,4 @@
-package domain
+package model
 
 import (
 	"gorm.io/gorm"
@@ -15,7 +15,7 @@ type BaseModel struct {
 type PageDomain[T any] struct {
 	PageNo int `json:"pageNo,omitempty"`
 	PageSize int `json:"pageSize,omitempty"`
-	Condition T `json:"condition,omitempty"`
+	Condition *T `json:"condition,omitempty"`
 }
 
 type ListDomain[T any] struct {

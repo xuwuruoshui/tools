@@ -4,13 +4,12 @@ import (
 	"end/api/handler"
 	"end/bootstrap"
 	"end/repository"
-	"end/usecase"
-	"github.com/gin-gonic/gin"
+	"end/service"
 )
 
-func User(r *gin.Engine, app *bootstrap.App) {
+func User(r *handler.RouterWrapper, app *bootstrap.App) {
 	userHandler := &handler.UserHandler{
-		UserUsecase: usecase.NewUserusecase(repository.NewUserRepository(app),app.Config.Timeout),
+		UserUsecase: service.NewUserService(repository.NewUserRepository(app),app.Config.Timeout),
 	}
 	// 设置
 	userGroup := r.Group("/user")

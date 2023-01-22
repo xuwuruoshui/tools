@@ -1,7 +1,7 @@
 package bootstrap
 
 import (
-	"end/domain"
+	"end/model"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -53,7 +53,7 @@ func (m *MySqlClient) ConnectDB(cfg *Config) {
 		panic("Mysql connect faild:" + err.Error())
 	}
 
-	err = db.AutoMigrate(&domain.User{})
+	err = db.AutoMigrate(&model.User{})
 	if err != nil {
 		panic(err)
 	}

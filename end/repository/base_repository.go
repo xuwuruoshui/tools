@@ -3,91 +3,92 @@ package repository
 import (
 	"context"
 	"end/bootstrap"
-	"end/domain"
+	"end/model"
 	"gorm.io/gorm"
 	"strings"
 )
 
 type BaseDao interface {
-	domain.User
+	model.User
 	GetId()string
 }
 
 
 type Repository[T any] interface {
-	GetById(context.Context, string) (*T,error)
-	GetAllList(context.Context, domain.PageDomain[T]) (*domain.ListDomain[T],error)
-	Create(context.Context, T) (*domain.RowAffect,error)
-	Update(context.Context, T) (*domain.RowAffect,error)
-	Delete(context.Context, string) (*domain.RowAffect,error)
+	GetById(context.Context, string) *RepoResData
+	GetAllList(context.Context, model.PageDomain[T]) *RepoResData
+	Create(context.Context, T) *RepoResData
+	Update(context.Context, T) *RepoResData
+	Delete(context.Context, string) *RepoResData
 }
 
 type BaseRepository[T BaseDao] struct {
 	App *bootstrap.App
 }
 
-func(u *BaseRepository[T]) GetById(c context.Context, id string) (*T,error){
+func(u *BaseRepository[T]) GetById(c context.Context, id string) *RepoResData{
 
 	db := u.App.DBClient.(*bootstrap.MySqlClient).DB
 	var t T
 	tx := db.First(&t, id)
 	if tx.Error!=nil && tx.Error!=gorm.ErrRecordNotFound{
-		return nil,tx.Error
+
+		return RepoResp(UNKNOWN,tx.Error)
 	}
-	return &t,nil
+	return RepoResp(OK,t)
 }
 
-func (u *BaseRepository[T]) GetAllList(c context.Context, p domain.PageDomain[T]) (*domain.ListDomain[T], error) {
+func (u *BaseRepository[T]) GetAllList(c context.Context, p model.PageDomain[T]) *RepoResData{
 	db := u.App.DBClient.(*bootstrap.MySqlClient).DB
 
-	var tList domain.ListDomain[T]
+	var tList model.ListDomain[T]
 	var t T
 	var ts []*T
 	var total int64
 
-	condition := db.Model(t).Count(&total)
-	if condition.Error!=nil  && condition.Error!=gorm.ErrRecordNotFound{
-		return nil,condition.Error
+	tx := db.Model(t).Count(&total)
+	if tx.Error!=nil  && tx.Error!=gorm.ErrRecordNotFound{
+		return RepoResp(UNKNOWN,tx.Error)
 	}
 
-	condition.Find(&ts)
+	tx.Find(&ts)
 
 	tList.List = ts
 	tList.Total = total
 
-	return &tList,nil
+	return RepoResp(OK,&tList)
 }
 
-func (u *BaseRepository[T]) Create(c context.Context, t T) (*domain.RowAffect, error) {
+func (u *BaseRepository[T]) Create(c context.Context, t T)*RepoResData {
 	db := u.App.DBClient.(*bootstrap.MySqlClient).DB
 	tx := db.Create(&t)
 	if tx.Error!=nil  && tx.Error!=gorm.ErrRecordNotFound{
-		return nil,tx.Error
+		return RepoResp(UNKNOWN,tx.Error)
 	}
 
-	return &domain.RowAffect{Id: t.GetId(), Affect: tx.RowsAffected},nil
+	return RepoResp(OK, &model.RowAffect{Id: t.GetId(), Affect: tx.RowsAffected})
 }
 
-func (u *BaseRepository[T]) Update(c context.Context, t T) (*domain.RowAffect, error) {
+func (u *BaseRepository[T]) Update(c context.Context, t T) *RepoResData {
 	db := u.App.DBClient.(*bootstrap.MySqlClient).DB
 
 	tx := db.Updates(&t)
 	if tx.Error!=nil  && tx.Error!=gorm.ErrRecordNotFound{
-		return nil,tx.Error
+		return RepoResp(UNKNOWN,tx.Error)
 	}
-	return &domain.RowAffect{Id: t.GetId(), Affect: tx.RowsAffected},nil
+	return RepoResp(OK,&model.RowAffect{Id: t.GetId(), Affect: tx.RowsAffected})
 }
 
-func (u *BaseRepository[T]) Delete(c context.Context, idsStr string) (*domain.RowAffect, error) {
+func (u *BaseRepository[T]) Delete(c context.Context, idsStr string) *RepoResData {
 	db := u.App.DBClient.(*bootstrap.MySqlClient).DB
 
 	ids := strings.Split(idsStr, ",")
 	var t T
 	tx := db.Delete(&t, ids)
 	if tx.Error!=nil  && tx.Error!=gorm.ErrRecordNotFound{
-		return nil,tx.Error
+		return RepoResp(UNKNOWN,tx.Error)
 	}
-	return &domain.RowAffect{Id:idsStr, Affect: tx.RowsAffected},nil
+	return RepoResp(OK,&model.RowAffect{Id: idsStr, Affect: tx.RowsAffected})
 }
 
 

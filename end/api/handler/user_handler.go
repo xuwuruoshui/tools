@@ -1,32 +1,26 @@
 package handler
 
 import (
-	"end/domain"
-	"end/usecase"
+	"end/model"
+	"end/service"
 	"github.com/gin-gonic/gin"
-	"net/http"
 	"strconv"
 	"time"
 )
 
 type UserHandler struct {
-	UserUsecase usecase.UserUseCase
+	UserUsecase    service.UserServiceImpl
 	contextTimeout time.Duration
 }
 
 
-func (h *UserHandler) GetUser(c *gin.Context) {
+func (h *UserHandler) GetUser(c *gin.Context) any{
 
 	id := c.Param("id")
-	u ,err := h.UserUsecase.GetById(c,id)
-	if err!=nil{
-		c.JSON(http.StatusNotFound, u)
-		return
-	}
-	c.JSON(http.StatusOK, u)
+	return ApiResp2(h.UserUsecase.GetUserById(c,id))
 }
 
-func (h *UserHandler) GetUserList(c *gin.Context) {
+func (h *UserHandler) GetUserList(c *gin.Context) any{
 
 	pageSizeStr := c.Query("pageSize")
 	pageNoStr := c.Query("pageNo")
@@ -34,57 +28,41 @@ func (h *UserHandler) GetUserList(c *gin.Context) {
 	pageSize, _ := strconv.Atoi(pageSizeStr)
 	pageNo, _ := strconv.Atoi(pageNoStr)
 
-	var user domain.User
+	var user model.User
 	err := c.ShouldBindQuery(&user)
 	if err != nil {
-		panic(err)
+		return ApiResp(UNKNOWN,err)
 	}
 
-	u ,_ := h.UserUsecase.GetList(c,domain.PageDomain[domain.User]{
+	return ApiResp2(h.UserUsecase.GetUserList(c, model.PageDomain[model.User]{
 		PageSize: pageSize,
 		PageNo: pageNo,
-		Condition: domain.User{},
-	})
-	c.JSON(http.StatusOK, u)
+		Condition: &user,
+	}))
 }
 
-func (h *UserHandler) CreateUser(c *gin.Context) {
+func (h *UserHandler) CreateUser(c *gin.Context) any{
 
-	var user domain.User
+	var user model.User
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
-		panic(err)
+		return ApiResp(UNKNOWN,err)
 	}
-	u ,err := h.UserUsecase.Create(c,user)
-	if err!=nil{
-		c.JSON(http.StatusNotFound, u)
-		return
-	}
-	c.JSON(http.StatusOK, u)
+	return ApiResp2(h.UserUsecase.CreateUser(c,user))
 }
 
-func (h *UserHandler) UpdateUser(c *gin.Context) {
+func (h *UserHandler) UpdateUser(c *gin.Context) any{
 
-	var user domain.User
+	var user model.User
 	err := c.ShouldBindJSON(&user)
-	if err != nil {
-		panic(err)
-	}
-	res ,err := h.UserUsecase.Update(c,user)
 	if err!=nil{
-		c.JSON(http.StatusNotFound, res)
-		return
+		return ApiResp(UNKNOWN,err)
 	}
-	c.JSON(http.StatusOK, res)
+	return ApiResp2(h.UserUsecase.UpdateUser(c,user))
 }
 
-func (h *UserHandler) DeleteUser(c *gin.Context) {
+func (h *UserHandler) DeleteUser(c *gin.Context) any{
 
 	ids := c.Param("ids")
-	res ,err := h.UserUsecase.Delete(c,ids)
-	if err!=nil{
-		c.JSON(http.StatusNotFound, res)
-		return
-	}
-	c.JSON(http.StatusOK, res)
+	return ApiResp2(h.UserUsecase.DeleteUser(c,ids))
 }
