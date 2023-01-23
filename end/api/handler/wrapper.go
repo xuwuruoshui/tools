@@ -21,9 +21,9 @@ func NewRouterPlus(engine *gin.Engine) *RouterWrapper {
 
 type RouterHandler func(ctx *gin.Context) any
 
-// func (r *RouterWrapper) GET(path string, handler RouterHandler,handlers ...gin.HandlerFunc) {
-// 	preHandler := PreHandler(handler)
-// 	postHanlder := PermAuth(handler)
+// func (r *RouterWrapper) GET(path string, handler.txt RouterHandler,handlers ...gin.HandlerFunc) {
+// 	preHandler := PreHandler(handler.txt)
+// 	postHanlder := PermAuth(handler.txt)
 // 	handlers = append(handlers,preHandler, postHanlder)
 // 	r.router.GET(path, handlers...)
 // }
