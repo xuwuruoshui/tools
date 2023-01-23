@@ -8,23 +8,22 @@ import (
 	"strings"
 )
 
-func OutFile(f *dst.File, inputPath,outFile string) {
-	CreateDir("outfile")
+func OutFile(f *dst.File, inputPath, outFile string) {
 
-	inputPath = strings.TrimSuffix(inputPath[strings.LastIndex(inputPath, "/")+1:],".txt")
-	if outFile==""{
-		outFile = "./outfile/"+ inputPath+"_generate.go"
+	inputPath = strings.TrimSuffix(inputPath[strings.LastIndex(inputPath, "/")+1:], ".txt")
+	if outFile == "" {
+		CreateDir("outfile")
+		outFile = "./outfile/" + inputPath + "_generate.go"
 	}
 	open, err := os.OpenFile(outFile, os.O_CREATE|os.O_TRUNC|os.O_APPEND, 0666)
 	if err != nil {
 		panic(err)
 	}
 	err = decorator.Fprint(open, f)
-	if err!=nil{
+	if err != nil {
 		panic(err)
 	}
 }
-
 
 // 判断文件夹是否存在
 func HasDir(path string) (bool, error) {
@@ -37,6 +36,7 @@ func HasDir(path string) (bool, error) {
 	}
 	return false, _err
 }
+
 // 创建文件夹
 func CreateDir(path string) {
 	_exist, _err := HasDir(path)
@@ -45,7 +45,7 @@ func CreateDir(path string) {
 		return
 	}
 	if _exist {
-		fmt.Println("文件夹已存在！")
+		fmt.Println("文件夹已存在,无需创建!!!")
 	} else {
 		err := os.Mkdir(path, os.ModePerm)
 		if err != nil {

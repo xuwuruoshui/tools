@@ -22,7 +22,7 @@ type EnumItem struct {
 }
 
 // const生成map
-func ConstGenerateMap(inputPath,outputPath string) {
+func ConstGenerateMap(inputPath, outputPath string) {
 
 	file, _ := os.ReadFile(inputPath)
 	f, err := decorator.Parse(string(file))
@@ -69,7 +69,7 @@ func ConstGenerateMap(inputPath,outputPath string) {
 
 	f.Decls = append(f.Decls, mg.generate())
 	utils.OutFile(f, inputPath, outputPath)
-
+	fmt.Println("===========code to map success==========:", outputPath)
 }
 
 func (m *EnumGenerator) generate() *dst.GenDecl {

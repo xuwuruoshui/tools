@@ -1,26 +1,21 @@
 package main
 
 var (
-	EnumApiInputPath = "./template/code/api_resp.txt"
-	EnumApiOutPath = "../end/api/handler.txt/code.go"
+	EnumApiInputPath = "./template/end/code/api_resp.txt"
+	EnumApiOutPath   = "../end/api/handler/code.go"
 
-	EnumServiceInputPath = "./template/code/service_resp.txt"
+	EnumServiceInputPath  = "./template/end/code/service_resp.txt"
 	EnumServiceOutputPath = "../end/service/code.go"
 
-	EnumRepositoryInputPath = "./template/code/repo_resp.txt"
+	EnumRepositoryInputPath  = "./template/end/code/repo_resp.txt"
 	EnumRepositoryOutputPath = "../end/repository/code.go"
-
 )
 
-func main(){
+func main() {
 
 	// enum 转 map
-	ConstGenerateMap(EnumApiInputPath,EnumApiOutPath)
-	ConstGenerateMap(EnumServiceInputPath,EnumServiceOutputPath)
-	ConstGenerateMap(EnumRepositoryInputPath,EnumRepositoryOutputPath)
+	ConstGenerateMap(EnumApiInputPath, EnumApiOutPath)
+	ConstGenerateMap(EnumServiceInputPath, EnumServiceOutputPath)
+	ConstGenerateMap(EnumRepositoryInputPath, EnumRepositoryOutputPath)
 
 }
-
-
-
-
