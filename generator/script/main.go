@@ -2,7 +2,7 @@ package main
 
 var (
 	EnumApiInputPath = "./template/code/api_resp.txt"
-	EnumApiOutPath = "../end/api/handler/code.go"
+	EnumApiOutPath = "../end/api/handler.txt/code.go"
 
 	EnumServiceInputPath = "./template/code/service_resp.txt"
 	EnumServiceOutputPath = "../end/service/code.go"
