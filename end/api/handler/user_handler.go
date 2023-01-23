@@ -48,7 +48,7 @@ func (h *UserHandler) CreateUser(c *gin.Context) any{
 	if err != nil {
 		return ApiResp(UNKNOWN,err)
 	}
-	return ApiResp2(h.UserUsecase.CreateUser(c,user))
+	return ApiResp2(h.UserUsecase.InsertUser(c,user))
 }
 
 func (h *UserHandler) UpdateUser(c *gin.Context) any{

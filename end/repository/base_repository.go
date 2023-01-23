@@ -4,6 +4,7 @@ import (
 	"context"
 	"end/bootstrap"
 	"end/model"
+	"end/utils"
 	"gorm.io/gorm"
 	"strings"
 )
@@ -17,7 +18,8 @@ type BaseDao interface {
 type Repository[T any] interface {
 	GetById(context.Context, string) *RepoResData
 	GetAllList(context.Context, model.PageDomain[T]) *RepoResData
-	Create(context.Context, T) *RepoResData
+	Insert(context.Context, T) *RepoResData
+	InsertMany(context.Context, []T) *RepoResData
 	Update(context.Context, T) *RepoResData
 	Delete(context.Context, string) *RepoResData
 }
@@ -59,14 +61,27 @@ func (u *BaseRepository[T]) GetAllList(c context.Context, p model.PageDomain[T])
 	return RepoResp(OK,&tList)
 }
 
-func (u *BaseRepository[T]) Create(c context.Context, t T)*RepoResData {
+func (u *BaseRepository[T]) Insert(c context.Context, t T)*RepoResData {
 	db := u.App.DBClient.(*bootstrap.MySqlClient).DB
 	tx := db.Create(&t)
 	if tx.Error!=nil  && tx.Error!=gorm.ErrRecordNotFound{
 		return RepoResp(UNKNOWN,tx.Error)
 	}
 
-	return RepoResp(OK, &model.RowAffect{Id: t.GetId(), Affect: tx.RowsAffected})
+	return RepoResp(OK, &model.RowAffect[string]{Id: t.GetId(), Affect: tx.RowsAffected})
+}
+
+func (u *BaseRepository[T]) InsertMany(c context.Context,ts []T) *RepoResData{
+	db := u.App.DBClient.(*bootstrap.MySqlClient).DB
+	tx := db.CreateInBatches(&ts,len(ts))
+	if tx.Error!=nil  && tx.Error!=gorm.ErrRecordNotFound{
+		return RepoResp(UNKNOWN,tx.Error)
+	}
+	ids := utils.Map(ts, func(s T) string {
+		return s.Id
+	})
+
+	return RepoResp(OK, &model.RowAffect[[]string]{Id: ids, Affect: tx.RowsAffected})
 }
 
 func (u *BaseRepository[T]) Update(c context.Context, t T) *RepoResData {
@@ -76,7 +91,7 @@ func (u *BaseRepository[T]) Update(c context.Context, t T) *RepoResData {
 	if tx.Error!=nil  && tx.Error!=gorm.ErrRecordNotFound{
 		return RepoResp(UNKNOWN,tx.Error)
 	}
-	return RepoResp(OK,&model.RowAffect{Id: t.GetId(), Affect: tx.RowsAffected})
+	return RepoResp(OK,&model.RowAffect[string]{Id: t.GetId(), Affect: tx.RowsAffected})
 }
 
 func (u *BaseRepository[T]) Delete(c context.Context, idsStr string) *RepoResData {
@@ -88,7 +103,7 @@ func (u *BaseRepository[T]) Delete(c context.Context, idsStr string) *RepoResDat
 	if tx.Error!=nil  && tx.Error!=gorm.ErrRecordNotFound{
 		return RepoResp(UNKNOWN,tx.Error)
 	}
-	return RepoResp(OK,&model.RowAffect{Id: idsStr, Affect: tx.RowsAffected})
+	return RepoResp(OK,&model.RowAffect[[]string]{Id: ids, Affect: tx.RowsAffected})
 }
 
 

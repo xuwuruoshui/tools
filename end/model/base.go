@@ -23,8 +23,10 @@ type ListDomain[T any] struct {
 	List []*T `json:"list,omitempty"`
 }
 
-type RowAffect struct {
-	Id string `json:"id,omitempty"`
+
+
+type RowAffect[T string | []string] struct {
+	Id T `json:"id,omitempty"`
 	Affect int64 `json:"affect,omitempty"`
 }
 

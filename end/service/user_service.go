@@ -11,7 +11,7 @@ import (
 type UserService interface {
 	GetUserById(context.Context, string) *ServiceResData
 	GetUserAllList(context.Context, model.PageDomain[model.User]) *ServiceResData
-	CreateUser(context.Context, model.User) *ServiceResData
+	InsertUser(context.Context, model.User) *ServiceResData
 	UpdateUser(context.Context, model.User) *ServiceResData
 	DeleteUser(context.Context, string) *ServiceResData
 	GetUserList(context.Context, model.PageDomain[model.User])*ServiceResData
@@ -42,10 +42,10 @@ func (u *UserServiceImpl) GetUserAllList(c context.Context, condition model.Page
 	return ServiceResp2(u.userRepository.GetAllList(ctx, condition))
 }
 
-func (u *UserServiceImpl) CreateUser(c context.Context, user model.User) *ServiceResData {
+func (u *UserServiceImpl) InsertUser(c context.Context, user model.User) *ServiceResData {
 	ctx, cancel := context.WithTimeout(c, u.contextTimeout)
 	defer cancel()
-	return ServiceResp2(u.userRepository.Create(ctx, user))
+	return ServiceResp2(u.userRepository.Insert(ctx, user))
 }
 
 func (u *UserServiceImpl) UpdateUser(c context.Context, user model.User) *ServiceResData {
