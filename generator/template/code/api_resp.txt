@@ -1,4 +1,7 @@
-package api_resp
+package handler
+
+// @Name   ApiCode
+// @Description  接口相关
 
 var (
 	OK       = 00000 // 正常
@@ -7,4 +10,5 @@ var (
 
 
 	NOLOGIN = 10000 // 没有登录
+	NOPERM = 10000 // 没有权限
 )

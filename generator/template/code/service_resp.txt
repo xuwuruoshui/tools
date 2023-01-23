@@ -1,4 +1,7 @@
-package service_resp
+package service
+
+// @Name   ServiceCode
+// @Description  接口相关
 
 var (
 	OK      = 00000 // 正常
@@ -6,3 +9,4 @@ var (
 
 	UserNotExit = 00001 // 用户不存在
 )
+
