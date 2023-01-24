@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type UserRepository[T model.User] interface {
+type {{ .MethodName }}Repository[T model.{{ .MethodName }}] interface {
 	// 实现通用Mapper
 	Repository[T]
 
@@ -15,38 +15,30 @@ type UserRepository[T model.User] interface {
 	GetList(context.Context, model.PageDomain[T])*RepoResData
 }
 
-type userRepository struct {
-	BaseRepository[model.User]
+type {{ .ValName }}Repository struct {
+	BaseRepository[model.{{ .MethodName }}]
 }
 
-func NewUserRepository(app *bootstrap.App) UserRepository[model.User] {
-	repository := &userRepository{}
+func New{{ .MethodName }}Repository(app *bootstrap.App) {{ .MethodName }}Repository[model.{{ .MethodName }}] {
+	repository := &{{ .ValName }}Repository{}
 	repository.App = app
 	return repository
 }
 
-func (u userRepository) GetList(ctx context.Context,p model.PageDomain[model.User])*RepoResData{
-	db := u.App.DBClient.(*bootstrap.MySqlClient).DB
+func (r {{ .ValName }}Repository) GetList(ctx context.Context,p model.PageDomain[model.{{ .MethodName }}])*RepoResData{
+	db := r.App.DBClient.(*bootstrap.MySqlClient).DB
 
-	var tList model.ListDomain[model.User]
-	var ts []*model.User
+	var tList model.ListDomain[model.{{ .MethodName }}]
+	var ts []*model.{{ .MethodName }}
 	var total int64
 
-	condition := db.Model(model.User{})
+	condition := db.Model(model.{{ .MethodName }}{})
 
-
-	if p.Condition.Id!=""{
-		condition.Where("id = ?",p.Condition.Id)
-	}
-	if p.Condition.Age!=nil{
-		condition.Where("age = ?",p.Condition.Age)
-	}
-	if p.Condition.Phone!=""{
-		condition.Where("phone = ?",p.Condition.Phone)
-	}
-	if p.Condition.Email!=""{
-		condition.Where("email = ?",p.Condition.Email)
-	}
+    {{ range $index, $element := .Conditions -}}
+    if p.Condition.{{ $element.Name }}!={{if eq (index $element.Type 0 ) '*'}}nil{{ else }}""{{ end }}{
+    		condition.Where("{{ $element.LowerName }} = ?",p.Condition.{{ $element.Name }})
+    }
+    {{ end }}
 	condition.Count(&total)
 	if condition.Error!=nil  && condition.Error!=gorm.ErrRecordNotFound{
 		return RepoResp(UNKNOWN,condition.Error)

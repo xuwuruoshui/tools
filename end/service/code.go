@@ -1,6 +1,6 @@
 package service
 
-// @Name   ServiceCode
+// @SuffixName   ServiceCode
 // @Description  接口相关
 
 var (

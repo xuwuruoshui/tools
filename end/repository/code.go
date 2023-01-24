@@ -1,6 +1,6 @@
 package repository
 
-// @Name   RepoCode
+// @SuffixName   RepoCode
 // @Description  接口相关
 
 var (

@@ -10,6 +10,17 @@ import (
 	"strings"
 )
 
+var (
+	EnumApiInputPath = "./template/end/code/api_resp.txt"
+	EnumApiOutPath   = "../end/api/handler/code.go"
+
+	EnumServiceInputPath  = "./template/end/code/service_resp.txt"
+	EnumServiceOutputPath = "../end/service/code.go"
+
+	EnumRepositoryInputPath  = "./template/end/code/repo_resp.txt"
+	EnumRepositoryOutputPath = "../end/repository/code.go"
+)
+
 type EnumGenerator struct {
 	Name        string
 	Description string
@@ -40,7 +51,7 @@ func ConstGenerateMap(inputPath, outputPath string) {
 				annotations := strings.Fields(str)
 				if len(annotations) == 3 {
 					switch annotations[1] {
-					case "@Name":
+					case "@SuffixName":
 						if len(annotations) != 3 {
 							panic("参数必须为3个")
 						}
@@ -100,4 +111,11 @@ func (m *EnumGenerator) generate() *dst.GenDecl {
 	}
 
 	return genDecl
+}
+
+
+func GenerateMap(){
+	//ConstGenerateMap(EnumApiInputPath, EnumApiOutPath)
+	//ConstGenerateMap(EnumServiceInputPath, EnumServiceOutputPath)
+	//ConstGenerateMap(EnumRepositoryInputPath, EnumRepositoryOutputPath)
 }

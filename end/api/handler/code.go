@@ -1,6 +1,6 @@
 package handler
 
-// @Name   ApiCode
+// @SuffixName   ApiCode
 // @Description  接口相关
 
 var (

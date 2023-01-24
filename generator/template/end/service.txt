@@ -8,61 +8,61 @@ import (
 )
 
 
-type UserService interface {
-	GetUserById(context.Context, string) *ServiceResData
-	GetUserAllList(context.Context, model.PageDomain[model.User]) *ServiceResData
-	InsertUser(context.Context, model.User) *ServiceResData
-	UpdateUser(context.Context, model.User) *ServiceResData
-	DeleteUser(context.Context, string) *ServiceResData
-	GetUserList(context.Context, model.PageDomain[model.User])*ServiceResData
+type {{ .MethodName }}Service interface {
+	Get{{ .MethodName }}ById(context.Context, string) *ServiceResData
+	Get{{ .MethodName }}AllList(context.Context, model.PageDomain[model.{{ .MethodName }}]) *ServiceResData
+	Insert{{ .MethodName }}(context.Context, model.{{ .MethodName }}) *ServiceResData
+	Update{{ .MethodName }}(context.Context, model.{{ .MethodName }}) *ServiceResData
+	Delete{{ .MethodName }}(context.Context, string) *ServiceResData
+	Get{{ .MethodName }}List(context.Context, model.PageDomain[model.{{ .MethodName }}])*ServiceResData
 }
 
-type UserServiceImpl struct {
-	userRepository repository.UserRepository[model.User]
+type {{ .MethodName }}ServiceImpl struct {
+	{{ .ValName }}Repository repository.{{ .MethodName }}Repository[model.{{ .MethodName }}]
 	contextTimeout time.Duration
 }
 
-func NewUserService(userepository repository.UserRepository[model.User], tm time.Duration) UserServiceImpl {
-	return UserServiceImpl{
-		userRepository: userepository,
+func New{{ .MethodName }}Service({{ .ValName }}epository repository.{{ .MethodName }}Repository[model.{{ .MethodName }}], tm time.Duration) {{ .MethodName }}ServiceImpl {
+	return {{ .MethodName }}ServiceImpl{
+		{{ .ValName }}Repository: {{ .ValName }}epository,
 		contextTimeout: tm,
 	}
 }
 
 
-func (u *UserServiceImpl) GetUserById(c context.Context, id string) *ServiceResData {
+func (u *{{ .MethodName }}ServiceImpl) Get{{ .MethodName }}ById(c context.Context, id string) *ServiceResData {
 	ctx, cancel := context.WithTimeout(c, u.contextTimeout)
 	defer cancel()
-	return ServiceResp2(u.userRepository.GetById(ctx, id))
+	return ServiceResp2(u.{{ .ValName }}Repository.GetById(ctx, id))
 }
 
-func (u *UserServiceImpl) GetUserAllList(c context.Context, condition model.PageDomain[model.User]) *ServiceResData {
+func (u *{{ .MethodName }}ServiceImpl) Get{{ .MethodName }}AllList(c context.Context, condition model.PageDomain[model.{{ .MethodName }}]) *ServiceResData {
 	ctx, cancel := context.WithTimeout(c, u.contextTimeout)
 	defer cancel()
-	return ServiceResp2(u.userRepository.GetAllList(ctx, condition))
+	return ServiceResp2(u.{{ .ValName }}Repository.GetAllList(ctx, condition))
 }
 
-func (u *UserServiceImpl) InsertUser(c context.Context, user model.User) *ServiceResData {
+func (u *{{ .MethodName }}ServiceImpl) Insert{{ .MethodName }}(c context.Context, {{ .ValName }} model.{{ .MethodName }}) *ServiceResData {
 	ctx, cancel := context.WithTimeout(c, u.contextTimeout)
 	defer cancel()
-	return ServiceResp2(u.userRepository.Insert(ctx, user))
+	return ServiceResp2(u.{{ .ValName }}Repository.Insert(ctx, {{ .ValName }}))
 }
 
-func (u *UserServiceImpl) UpdateUser(c context.Context, user model.User) *ServiceResData {
+func (u *{{ .MethodName }}ServiceImpl) Update{{ .MethodName }}(c context.Context, {{ .ValName }} model.{{ .MethodName }}) *ServiceResData {
 	ctx, cancel := context.WithTimeout(c, u.contextTimeout)
 	defer cancel()
 
-	return ServiceResp2(u.userRepository.Update(ctx, user))
+	return ServiceResp2(u.{{ .ValName }}Repository.Update(ctx, {{ .ValName }}))
 }
 
-func (u *UserServiceImpl) DeleteUser(c context.Context, id string) *ServiceResData {
+func (u *{{ .MethodName }}ServiceImpl) Delete{{ .MethodName }}(c context.Context, id string) *ServiceResData {
 	ctx, cancel := context.WithTimeout(c, u.contextTimeout)
 	defer cancel()
-	return ServiceResp2(u.userRepository.Delete(ctx, id))
+	return ServiceResp2(u.{{ .ValName }}Repository.Delete(ctx, id))
 }
 
-func (u *UserServiceImpl) GetUserList(c context.Context, condition model.PageDomain[model.User]) *ServiceResData {
+func (u *{{ .MethodName }}ServiceImpl) Get{{ .MethodName }}List(c context.Context, condition model.PageDomain[model.{{ .MethodName }}]) *ServiceResData {
 	ctx, cancel := context.WithTimeout(c, u.contextTimeout)
 	defer cancel()
-	return ServiceResp2(u.userRepository.GetList(ctx, condition))
+	return ServiceResp2(u.{{ .ValName }}Repository.GetList(ctx, condition))
 }

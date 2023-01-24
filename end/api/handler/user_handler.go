@@ -9,7 +9,7 @@ import (
 )
 
 type UserHandler struct {
-	UserUsecase    service.UserServiceImpl
+	UserService    service.UserServiceImpl
 	contextTimeout time.Duration
 }
 
@@ -17,7 +17,7 @@ type UserHandler struct {
 func (h *UserHandler) GetUser(c *gin.Context) any{
 
 	id := c.Param("id")
-	return ApiResp2(h.UserUsecase.GetUserById(c,id))
+	return ApiResp2(h.UserService.GetUserById(c,id))
 }
 
 func (h *UserHandler) GetUserList(c *gin.Context) any{
@@ -34,7 +34,7 @@ func (h *UserHandler) GetUserList(c *gin.Context) any{
 		return ApiResp(UNKNOWN,err)
 	}
 
-	return ApiResp2(h.UserUsecase.GetUserList(c, model.PageDomain[model.User]{
+	return ApiResp2(h.UserService.GetUserList(c, model.PageDomain[model.User]{
 		PageSize: pageSize,
 		PageNo: pageNo,
 		Condition: &user,
@@ -48,7 +48,7 @@ func (h *UserHandler) CreateUser(c *gin.Context) any{
 	if err != nil {
 		return ApiResp(UNKNOWN,err)
 	}
-	return ApiResp2(h.UserUsecase.InsertUser(c,user))
+	return ApiResp2(h.UserService.InsertUser(c,user))
 }
 
 func (h *UserHandler) UpdateUser(c *gin.Context) any{
@@ -58,11 +58,11 @@ func (h *UserHandler) UpdateUser(c *gin.Context) any{
 	if err!=nil{
 		return ApiResp(UNKNOWN,err)
 	}
-	return ApiResp2(h.UserUsecase.UpdateUser(c,user))
+	return ApiResp2(h.UserService.UpdateUser(c,user))
 }
 
 func (h *UserHandler) DeleteUser(c *gin.Context) any{
 
 	ids := c.Param("ids")
-	return ApiResp2(h.UserUsecase.DeleteUser(c,ids))
+	return ApiResp2(h.UserService.DeleteUser(c,ids))
 }

@@ -7,18 +7,18 @@ import (
 	"end/service"
 )
 
-func User(r *handler.RouterWrapper, app *bootstrap.App) {
-	userHandler := &handler.UserHandler{
-		UserUsecase: service.NewUserService(repository.NewUserRepository(app),app.Config.Timeout),
+func {{ .MethodName }}(r *handler.RouterWrapper, app *bootstrap.App) {
+	{{ .ValName }}Handler := &handler.{{ .MethodName }}Handler{
+		{{ .MethodName }}Usecase: service.New{{ .MethodName }}Service(repository.New{{ .MethodName }}Repository(app),app.Config.Timeout),
 	}
 	// 设置
-	userGroup := r.Group("/user")
+	{{ .ValName }}Group := r.Group("/{{ .ValName }}")
 	{
-		userGroup.GET("/:id", userHandler.GetUser)
-		userGroup.GET("/list", userHandler.GetUserList)
-		userGroup.POST("", userHandler.CreateUser)
-		userGroup.PUT("", userHandler.UpdateUser)
-		userGroup.DELETE("/:ids", userHandler.DeleteUser)
+		{{ .ValName }}Group.GET("/:id", {{ .ValName }}Handler.Get{{ .MethodName }})
+		{{ .ValName }}Group.GET("/list", {{ .ValName }}Handler.Get{{ .MethodName }}List)
+		{{ .ValName }}Group.POST("", {{ .ValName }}Handler.Create{{ .MethodName }})
+		{{ .ValName }}Group.PUT("", {{ .ValName }}Handler.Update{{ .MethodName }})
+		{{ .ValName }}Group.DELETE("/:ids", {{ .ValName }}Handler.Delete{{ .MethodName }})
 	}
 
 }

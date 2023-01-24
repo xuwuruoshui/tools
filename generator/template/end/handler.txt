@@ -8,19 +8,19 @@ import (
 	"time"
 )
 
-type UserHandler struct {
-	UserUsecase    service.UserServiceImpl
+type {{ .MethodName }}Handler struct {
+	{{ .MethodName }}Service    service.{{ .MethodName }}ServiceImpl
 	contextTimeout time.Duration
 }
 
 
-func (h *UserHandler) GetUser(c *gin.Context) any{
+func (h *{{ .MethodName }}Handler) Get{{ .MethodName }}(c *gin.Context) any{
 
 	id := c.Param("id")
-	return ApiResp2(h.UserUsecase.GetUserById(c,id))
+	return ApiResp2(h.{{ .MethodName }}Service.Get{{ .MethodName }}ById(c,id))
 }
 
-func (h *UserHandler) GetUserList(c *gin.Context) any{
+func (h *{{ .MethodName }}Handler) Get{{ .MethodName }}List(c *gin.Context) any{
 
 	pageSizeStr := c.Query("pageSize")
 	pageNoStr := c.Query("pageNo")
@@ -28,41 +28,41 @@ func (h *UserHandler) GetUserList(c *gin.Context) any{
 	pageSize, _ := strconv.Atoi(pageSizeStr)
 	pageNo, _ := strconv.Atoi(pageNoStr)
 
-	var user model.User
-	err := c.ShouldBindQuery(&user)
+	var {{ .ValName }} model.{{ .MethodName }}
+	err := c.ShouldBindQuery(&{{ .ValName }})
 	if err != nil {
 		return ApiResp(UNKNOWN,err)
 	}
 
-	return ApiResp2(h.UserUsecase.GetUserList(c, model.PageDomain[model.User]{
+	return ApiResp2(h.{{ .MethodName }}Service.Get{{ .MethodName }}List(c, model.PageDomain[model.{{ .MethodName }}]{
 		PageSize: pageSize,
 		PageNo: pageNo,
-		Condition: &user,
+		Condition: &{{ .ValName }},
 	}))
 }
 
-func (h *UserHandler) CreateUser(c *gin.Context) any{
+func (h *{{ .MethodName }}Handler) Create{{ .MethodName }}(c *gin.Context) any{
 
-	var user model.User
-	err := c.ShouldBindJSON(&user)
+	var {{ .ValName }} model.{{ .MethodName }}
+	err := c.ShouldBindJSON(&{{ .ValName }})
 	if err != nil {
 		return ApiResp(UNKNOWN,err)
 	}
-	return ApiResp2(h.UserUsecase.InsertUser(c,user))
+	return ApiResp2(h.{{ .MethodName }}Service.Insert{{ .MethodName }}(c,{{ .ValName }}))
 }
 
-func (h *UserHandler) UpdateUser(c *gin.Context) any{
+func (h *{{ .MethodName }}Handler) Update{{ .MethodName }}(c *gin.Context) any{
 
-	var user model.User
-	err := c.ShouldBindJSON(&user)
+	var {{ .ValName }} model.{{ .MethodName }}
+	err := c.ShouldBindJSON(&{{ .ValName }})
 	if err!=nil{
 		return ApiResp(UNKNOWN,err)
 	}
-	return ApiResp2(h.UserUsecase.UpdateUser(c,user))
+	return ApiResp2(h.{{ .MethodName }}Service.Update{{ .MethodName }}(c,{{ .ValName }}))
 }
 
-func (h *UserHandler) DeleteUser(c *gin.Context) any{
+func (h *{{ .MethodName }}Handler) Delete{{ .MethodName }}(c *gin.Context) any{
 
 	ids := c.Param("ids")
-	return ApiResp2(h.UserUsecase.DeleteUser(c,ids))
+	return ApiResp2(h.{{ .MethodName }}Service.Delete{{ .MethodName }}(c,ids))
 }

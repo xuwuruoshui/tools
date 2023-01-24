@@ -25,8 +25,8 @@ func NewUserRepository(app *bootstrap.App) UserRepository[model.User] {
 	return repository
 }
 
-func (u userRepository) GetList(ctx context.Context,p model.PageDomain[model.User])*RepoResData{
-	db := u.App.DBClient.(*bootstrap.MySqlClient).DB
+func (r userRepository) GetList(ctx context.Context,p model.PageDomain[model.User])*RepoResData{
+	db := r.App.DBClient.(*bootstrap.MySqlClient).DB
 
 	var tList model.ListDomain[model.User]
 	var ts []*model.User
