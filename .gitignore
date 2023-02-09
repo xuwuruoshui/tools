@@ -2,3 +2,4 @@
 .idea
 *.exe
 node_modules
+*.exe
