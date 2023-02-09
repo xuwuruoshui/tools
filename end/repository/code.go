@@ -1,12 +1,10 @@
 package repository
 
-// @SuffixName   RepoCode
+// @Name   RepoCode
 // @Description  接口相关
-
 var (
-	OK      = 00000 //
-	UNKNOWN = 00001 // 未知异常
-
+	OK         = 00000 //
+	UNKNOWN    = 00001 // 未知异常
 	DateNoExit = 00001 // 不存在该数据
 )
 

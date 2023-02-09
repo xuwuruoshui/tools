@@ -51,7 +51,7 @@ func ConstGenerateMap(inputPath, outputPath string) {
 				annotations := strings.Fields(str)
 				if len(annotations) == 3 {
 					switch annotations[1] {
-					case "@SuffixName":
+					case "@Name":
 						if len(annotations) != 3 {
 							panic("参数必须为3个")
 						}
@@ -113,9 +113,8 @@ func (m *EnumGenerator) generate() *dst.GenDecl {
 	return genDecl
 }
 
-
-func GenerateMap(){
-	//ConstGenerateMap(EnumApiInputPath, EnumApiOutPath)
-	//ConstGenerateMap(EnumServiceInputPath, EnumServiceOutputPath)
-	//ConstGenerateMap(EnumRepositoryInputPath, EnumRepositoryOutputPath)
+func GenerateMap() {
+	ConstGenerateMap(EnumApiInputPath, EnumApiOutPath)
+	ConstGenerateMap(EnumServiceInputPath, EnumServiceOutputPath)
+	ConstGenerateMap(EnumRepositoryInputPath, EnumRepositoryOutputPath)
 }

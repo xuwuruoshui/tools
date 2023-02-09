@@ -1,8 +1,7 @@
 package handler
 
-// @SuffixName   ApiCode
+// @Name   ApiCode
 // @Description  接口相关
-
 var (
 	OK       = 00000 // 正常
 	UNKNOWN  = 00001 // 未知异常

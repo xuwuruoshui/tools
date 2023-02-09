@@ -3,9 +3,8 @@ package main
 func main() {
 
 	// enum 转 map
-	//GenerateMap()
-
+	GenerateMap()
 
 	// 生成业务逻辑一套
-	BizGenerate("./model/student.go")
+	//BizGenerate("./model/student.go")
 }
