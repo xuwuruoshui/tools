@@ -32,6 +32,12 @@
               </el-icon>
               About
             </el-menu-item>
+            <el-menu-item index="/ws">
+              <el-icon>
+                <More/>
+              </el-icon>
+              Ws
+            </el-menu-item>
           </el-menu-item-group>
           <el-sub-menu index="1">
             <template #title>

@@ -29,6 +29,11 @@ const router = createRouter({
                     path: '/about',
                     name: 'about',
                     component: () => import('../views/About.vue')
+                },
+                {
+                    path: '/ws',
+                    name: 'ws',
+                    component: () => import('../views/Ws.vue')
                 }
             ]
         },
@@ -46,7 +51,8 @@ const router = createRouter({
 router.beforeEach((to, from) => {
 
     // 没登陆跳转login页
-    const token = window.localStorage.getItem("custom-token")
+    let token = window.localStorage.getItem("custom-token")
+    token = 'aaa'
     if (token == null && to.name != 'login') {
         return {name: 'login'}
     }
