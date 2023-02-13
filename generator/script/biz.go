@@ -113,6 +113,7 @@ type BizFile struct {
 // 业务生成
 func BizGenerate(modelPath string) {
 
+	// 生成业务
 	inputPath := []BizFile{
 		{SuffixName: Model, InputPath: BizModelInputPath, OutPath: BizModelOutPath},
 		{SuffixName: Router, InputPath: BizRouterInputPath, OutPath: BizRouterOutPath},
@@ -135,5 +136,4 @@ func BizGenerate(modelPath string) {
 		// 通过ast获取结构体内的文件类型
 		tmpl.Execute(file, &biz)
 	}
-
 }
