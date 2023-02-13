@@ -34,6 +34,10 @@ const router = createRouter({
                     path: '/ws',
                     name: 'ws',
                     component: () => import('../views/Ws.vue')
+                },{
+                    path:'/user',
+                    name: 'user',
+                    component: ()=>import('../views/list/User.vue')
                 }
             ]
         },
