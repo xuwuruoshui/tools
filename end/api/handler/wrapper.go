@@ -7,15 +7,15 @@ import (
 	"strings"
 )
 
-// gin router wrapper 统一返回
+// gin Router wrapper 统一返回
 
 type RouterWrapper struct {
-	router *gin.Engine
+	Router *gin.Engine
 }
 
 func NewRouterPlus(engine *gin.Engine) *RouterWrapper {
 	return &RouterWrapper{
-		router: engine,
+		Router: engine,
 	}
 }
 
@@ -25,40 +25,40 @@ type RouterHandler func(ctx *gin.Context) any
 // 	preHandler := PreHandler(handler.txt)
 // 	postHanlder := PermAuth(handler.txt)
 // 	handlers = append(handlers,preHandler, postHanlder)
-// 	r.router.GET(path, handlers...)
+// 	r.Router.GET(path, handlers...)
 // }
 
 func (r *RouterWrapper) GETJWT(path string, handler RouterHandler, perms ...string) {
-	r.router.GET(path, JwtAuth(), PermAuth(perms...), DefaultResp(handler))
+	r.Router.GET(path, JwtAuth(), PermAuth(perms...), DefaultResp(handler))
 }
 func (r *RouterWrapper) GET(path string, handler RouterHandler, perms ...string) {
-	r.router.GET(path, DefaultResp(handler))
+	r.Router.GET(path, DefaultResp(handler))
 }
 
 func (r *RouterWrapper) POSTJWT(path string, handler RouterHandler, perms ...string) {
-	r.router.POST(path, JwtAuth(), PermAuth(perms...), DefaultResp(handler))
+	r.Router.POST(path, JwtAuth(), PermAuth(perms...), DefaultResp(handler))
 }
 func (r *RouterWrapper) POST(path string, handler RouterHandler, perms ...string) {
-	r.router.POST(path, DefaultResp(handler))
+	r.Router.POST(path, DefaultResp(handler))
 }
 
 func (r *RouterWrapper) PUTJWT(path string, handler RouterHandler, perms ...string) {
-	r.router.PUT(path, JwtAuth(), PermAuth(perms...), DefaultResp(handler))
+	r.Router.PUT(path, JwtAuth(), PermAuth(perms...), DefaultResp(handler))
 }
 func (r *RouterWrapper) PUT(path string, handler RouterHandler, perms ...string) {
-	r.router.PUT(path, DefaultResp(handler))
+	r.Router.PUT(path, DefaultResp(handler))
 }
 
 func (r *RouterWrapper) DELETEJWT(path string, handler RouterHandler, perms ...string) {
-	r.router.DELETE(path, JwtAuth(), PermAuth(perms...), DefaultResp(handler))
+	r.Router.DELETE(path, JwtAuth(), PermAuth(perms...), DefaultResp(handler))
 }
 func (r *RouterWrapper) DELETE(path string, handler RouterHandler, perms ...string) {
-	r.router.DELETE(path, DefaultResp(handler))
+	r.Router.DELETE(path, DefaultResp(handler))
 }
 
 func (r *RouterWrapper) Group(path string, handlers ...gin.HandlerFunc) *RouterGroupWrapper {
 	return &RouterGroupWrapper{
-		routerGroup: r.router.Group(path, handlers...),
+		routerGroup: r.Router.Group(path, handlers...),
 	}
 }
 
@@ -103,7 +103,10 @@ func (r *RouterGroupWrapper) Group(path string, handlers ...gin.HandlerFunc) *Ro
 func DefaultResp(handler RouterHandler) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		m := handler(ctx).(*ApiRespData)
-		ctx.JSON(http.StatusOK, m)
+		// 不是websocket直接返回json
+		if ctx.GetHeader("Upgrade")!="websocket"{
+			ctx.JSON(http.StatusOK, m)
+		}
 		ctx.Next()
 	}
 }
