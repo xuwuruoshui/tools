@@ -6,5 +6,5 @@ func main() {
 	GenerateMap()
 
 	// 生成业务逻辑一套
-	//BizGenerate("./model/student.go")
+	BizGenerate("./model/student.go")
 }

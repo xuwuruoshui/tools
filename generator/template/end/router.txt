@@ -9,7 +9,7 @@ import (
 
 func {{ .MethodName }}(r *handler.RouterWrapper, app *bootstrap.App) {
 	{{ .ValName }}Handler := &handler.{{ .MethodName }}Handler{
-		{{ .MethodName }}Usecase: service.New{{ .MethodName }}Service(repository.New{{ .MethodName }}Repository(app),app.Config.Timeout),
+		{{ .MethodName }}Service: service.New{{ .MethodName }}Service(repository.New{{ .MethodName }}Repository(app),app.Config.Timeout),
 	}
 	// 设置
 	{{ .ValName }}Group := r.Group("/{{ .ValName }}")

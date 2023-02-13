@@ -9,7 +9,7 @@ import (
 
 func Student(r *handler.RouterWrapper, app *bootstrap.App) {
 	studentHandler := &handler.StudentHandler{
-		StudentUsecase: service.NewStudentService(repository.NewStudentRepository(app),app.Config.Timeout),
+		StudentService: service.NewStudentService(repository.NewStudentRepository(app),app.Config.Timeout),
 	}
 	// 设置
 	studentGroup := r.Group("/student")
