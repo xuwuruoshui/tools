@@ -1,123 +1,126 @@
 <template>
-  <el-row id="index">
+  <div id="index">
     <!--#region 菜单路由 -->
-    <el-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4">
-      <el-row id="nav-menu">
-        <el-menu  :default-active="defaultActive" :default-openeds="['']"
-                 :collapse="isCollapse" :router="true"
-                 text-color="#78828a" active-text-color="#6777ef" background-color="#ffffff">
-          <!--#region 折叠开关 -->
-          <el-menu-item class="logo" index="">
-            <el-row v-show="isCollapse">To</el-row>
-            <template #title>
-              <el-row>Tools</el-row>
-            </template>
-          </el-menu-item>
-          <!--#endregion 折叠开关 -->
-          <el-sub-menu index="">
+    <el-row id="nav-menu" v-if="isShowSideBar">
+      <el-menu :default-active="defaultActive" :default-openeds="['']"
+               :collapse="isCollapse" :router="true"
+               text-color="#78828a" active-text-color="#6777ef" background-color="#ffffff">
+        <!--#region 折叠开关 -->
+        <el-menu-item class="logo" index="">
+          <el-row v-show="isCollapse">To</el-row>
+          <template #title>
+            <el-row>Tools</el-row>
+          </template>
+        </el-menu-item>
+        <!--#endregion 折叠开关 -->
+        <el-sub-menu index="">
+          <template #title>
+            <el-icon>
+              <House/>
+            </el-icon>
+            <span>导航</span>
+          </template>
+          <el-menu-item-group>
+            <el-menu-item index="/home">
+              <el-icon>
+                <CoffeeCup/>
+              </el-icon>
+              Home
+            </el-menu-item>
+            <el-menu-item index="/about">
+              <el-icon>
+                <More/>
+              </el-icon>
+              About
+            </el-menu-item>
+            <el-menu-item index="/ws">
+              <el-icon>
+                <More/>
+              </el-icon>
+              Ws
+            </el-menu-item>
+          </el-menu-item-group>
+          <el-sub-menu index="1">
             <template #title>
               <el-icon>
-                <House/>
+                <location/>
               </el-icon>
-              <span>导航</span>
+              <span>用户管理</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="/home">
-                <el-icon>
-                  <CoffeeCup/>
-                </el-icon>
-                Home
-              </el-menu-item>
-              <el-menu-item index="/about">
-                <el-icon>
-                  <More/>
-                </el-icon>
-                About
-              </el-menu-item>
-              <el-menu-item index="/ws">
-                <el-icon>
-                  <More/>
-                </el-icon>
-                Ws
-              </el-menu-item>
+              <el-menu-item index="/user">用户</el-menu-item>
             </el-menu-item-group>
-            <el-sub-menu index="1">
-              <template #title>
-                <el-icon>
-                  <location/>
-                </el-icon>
-                <span>用户管理</span>
-              </template>
-              <el-menu-item-group>
-                <el-menu-item index="/user">用户</el-menu-item>
-              </el-menu-item-group>
-            </el-sub-menu>
           </el-sub-menu>
-          <el-menu-item index="/test">
-            <el-icon>
-              <document/>
-            </el-icon>
-            <template #title>Test</template>
-          </el-menu-item>
-          <el-menu-item index="4">
-            <el-icon>
-              <setting/>
-            </el-icon>
-            <template #title>Navigator Four</template>
-          </el-menu-item>
-        </el-menu>
-      </el-row>
-    </el-col>
+        </el-sub-menu>
+        <el-menu-item index="/test">
+          <el-icon>
+            <document/>
+          </el-icon>
+          <template #title>Test</template>
+        </el-menu-item>
+        <el-menu-item index="4">
+          <el-icon>
+            <setting/>
+          </el-icon>
+          <template #title>Navigator Four</template>
+        </el-menu-item>
+      </el-menu>
+    </el-row>
     <!--#endregion 菜单路由 -->
+
     <!--#region 内容 -->
-    <el-col :xs="20" :sm="20" :md="20" :lg="20" :xl="20">
-      <el-row id="content" justify="start">
-        <el-col id="header">
-          <el-icon class="icon" @click="collapseMenu">
+    <el-row id="content" justify="start">
+      <el-col>
+        <el-row id="header" justify="space-between">
+          <el-icon :xs="8" :sm="4" :md="4" :lg="4" :xl="4" class="icon" @click="collapseMenu">
             <Expand v-show="!isCollapse"/>
             <Fold v-show="isCollapse"/>
           </el-icon>
-          <div class="userInfo">
-            <el-avatar class="avatar" :size="35"
-                       src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"/>
-            <el-dropdown class="userData">
+          <el-col :xs="16" :sm="20" :md="20" :lg="20" :xl="20" class="userInfo">
+            <el-row justify="end">
+              <el-avatar class="avatar" :size="35"
+                         src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"/>
+              <el-dropdown class="userData">
             <span class="el-dropdown-link">
               你好，hahaha
               <el-icon class="el-icon--right">
                 <arrow-down/>
               </el-icon>
             </span>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item>Action 1</el-dropdown-item>
-                  <el-dropdown-item>Action 2</el-dropdown-item>
-                  <el-dropdown-item>Action 3</el-dropdown-item>
-                  <el-dropdown-item disabled>Action 4</el-dropdown-item>
-                  <el-dropdown-item divided>Action 5</el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item>Action 1</el-dropdown-item>
+                    <el-dropdown-item>Action 2</el-dropdown-item>
+                    <el-dropdown-item>Action 3</el-dropdown-item>
+                    <el-dropdown-item disabled>Action 4</el-dropdown-item>
+                    <el-dropdown-item divided>Action 5</el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </el-row>
+          </el-col>
+        </el-row>
+      </el-col>
+      <el-col id="article">
+        <section class="section">
+          <div class="title">
+            <h1>{{ title }} </h1>
           </div>
-        </el-col>
-        <el-col id="article">
-          <section class="section">
-            <div class="title">
-              <h1>{{ title }} </h1>
-            </div>
-            <div class="content">
-              <RouterView/>
-            </div>
-          </section>
-        </el-col>
-      </el-row>
-    </el-col>
+          <div class="content">
+            <RouterView/>
+          </div>
+        </section>
+      </el-col>
+    </el-row>
     <!--#endregion 内容 -->
-  </el-row>
+
+  </div>
 </template>
 
 <script setup lang="ts">
+import 'element-plus/theme-chalk/display.css'
 import {RouterView, useRouter} from 'vue-router'
-import {ref, watch} from 'vue'
+import {onMounted, Ref, ref, watch} from 'vue'
 import {ArrowDown, CoffeeCup, Document, Expand, Fold, House, Location, More, Setting,} from '@element-plus/icons-vue'
 
 // #region 折叠
@@ -125,11 +128,14 @@ const isCollapse = ref(false)
 const sideFontSize = ref('1.1rem')
 const collapseMenu = () => {
   isCollapse.value = !isCollapse.value
+
   if (isCollapse.value) {
+    isShowSideBar.value = screenWidth.value >= 736;
     setTimeout(function () {
       sideFontSize.value = '2rem'
     }, 300)
   } else {
+    isShowSideBar.value = true
     sideFontSize.value = '1.1rem'
   }
 }
@@ -151,6 +157,21 @@ watch(() =>
     }, {immediate: true, deep: true})
 // #endregion
 
+// 是否显示侧边栏
+let isShowSideBar: Ref<Boolean> = ref<Boolean>(true)
+
+const screenWidth = ref(window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth)
+onMounted(() => {
+  window.onresize = () => {
+    return (() => {
+      screenWidth.value = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
+    })()
+  }
+})
+
+watch(screenWidth, (width) => {
+  isShowSideBar.value = width >= 736;
+})
 
 </script>
 
@@ -159,9 +180,12 @@ watch(() =>
   width: 100vw;
   height: 100vh;
   display: flex;
+  justify-content: space-between;
 
   #nav-menu {
+    z-index: 1;
     height: 100%;
+
 
     .el-menu {
       border-right: 0;
@@ -195,17 +219,18 @@ watch(() =>
   }
 
   #content {
+    z-index: 0;
+    width: 100%;
     height: 100%;
     background: #f4f6f9;
-
+    align-content: flex-start;
 
 
     #header {
       background: #6777ef;
       cursor: pointer;
       font-size: 1.5rem;
-      display: flex;
-      justify-content: space-between;
+      align-items: center;
 
       .icon {
         color: #f2f2f2;
@@ -214,7 +239,6 @@ watch(() =>
 
       .userInfo {
         margin: 20px;
-        display: flex;
         font-size: 1rem;
 
         .avatar {
