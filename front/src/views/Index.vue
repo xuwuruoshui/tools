@@ -1,7 +1,7 @@
 <template>
   <div id="index">
     <!--#region 菜单路由 -->
-    <el-row id="nav-menu" v-if="isShowSideBar">
+    <el-row id="nav-menu" class="nav-menu" v-if="isShowSideBar">
       <el-menu :default-active="defaultActive" :default-openeds="['']"
                :collapse="isCollapse" :router="true"
                text-color="#78828a" active-text-color="#6777ef" background-color="#ffffff">
@@ -21,23 +21,29 @@
             <span>导航</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="/home">
+            <el-menu-item index="/home" @click="collapseMenu2">
               <el-icon>
                 <CoffeeCup/>
               </el-icon>
               Home
             </el-menu-item>
-            <el-menu-item index="/about">
+            <el-menu-item index="/about" @click="collapseMenu2">
               <el-icon>
                 <More/>
               </el-icon>
               About
             </el-menu-item>
-            <el-menu-item index="/ws">
+            <el-menu-item index="/ws" @click="collapseMenu2">
               <el-icon>
                 <More/>
               </el-icon>
               Ws
+            </el-menu-item>
+            <el-menu-item index="/relation" @click="collapseMenu2">
+              <el-icon>
+                <More/>
+              </el-icon>
+              Relation
             </el-menu-item>
           </el-menu-item-group>
           <el-sub-menu index="1">
@@ -66,6 +72,7 @@
         </el-menu-item>
       </el-menu>
     </el-row>
+    <div id="nav-menu-cover" v-show="isShowCover" @click="collapseMenu3"></div>
     <!--#endregion 菜单路由 -->
 
     <!--#region 内容 -->
@@ -120,23 +127,47 @@
 <script setup lang="ts">
 import 'element-plus/theme-chalk/display.css'
 import {RouterView, useRouter} from 'vue-router'
-import {onMounted, Ref, ref, watch} from 'vue'
+import {computed, onMounted, Ref, ref, watch} from 'vue'
 import {ArrowDown, CoffeeCup, Document, Expand, Fold, House, Location, More, Setting,} from '@element-plus/icons-vue'
 
 // #region 折叠
-const isCollapse = ref(false)
+const isCollapse = ref(true)
 const sideFontSize = ref('1.1rem')
 const collapseMenu = () => {
   isCollapse.value = !isCollapse.value
 
-  if (isCollapse.value) {
+  if (isCollapse.value) {   // 折叠
     isShowSideBar.value = screenWidth.value >= 736;
     setTimeout(function () {
       sideFontSize.value = '2rem'
     }, 300)
-  } else {
+  } else { // 打开
     isShowSideBar.value = true
     sideFontSize.value = '1.1rem'
+  }
+}
+
+
+const collapseMenu2 = () => {
+  if (screenWidth.value < 736) { // 小于736点击路由关闭侧边栏, 大于736不管
+    isCollapse.value = !isCollapse.value
+    if (isCollapse.value) {
+      isShowSideBar.value = screenWidth.value >= 736;
+      setTimeout(function () {
+        sideFontSize.value = '2rem'
+      }, 300)
+    } else { // 打开
+      isShowSideBar.value = true
+      sideFontSize.value = '1.1rem'
+    }
+  }
+}
+
+const collapseMenu3 = () => {
+  if (screenWidth.value < 736) { // 小于736点击路由关闭侧边栏, 大于736不管
+    isCollapse.value = true
+    isShowSideBar.value = false
+    sideFontSize.value = '2rem'
   }
 }
 // #endregion
@@ -157,21 +188,34 @@ watch(() =>
     }, {immediate: true, deep: true})
 // #endregion
 
-// 是否显示侧边栏
+// #region 是否显示侧边栏
 let isShowSideBar: Ref<Boolean> = ref<Boolean>(true)
 
+// 监听屏幕宽度
+window.onresize = () => {
+  return (() => {
+    screenWidth.value = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
+  })()
+}
 const screenWidth = ref(window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth)
-onMounted(() => {
-  window.onresize = () => {
-    return (() => {
-      screenWidth.value = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
-    })()
+watch(screenWidth, (width) => {
+  if (width < 736) {
+    isShowSideBar.value = false
+  } else if (width > 736 && width <= 992) {
+    isShowSideBar.value = true
+    isCollapse.value = true
+  }else if(width>992){
+    isShowSideBar.value = true
+    isCollapse.value = false
   }
 })
+// #endregion
 
-watch(screenWidth, (width) => {
-  isShowSideBar.value = width >= 736;
+// #region 遮罩层是否显示
+let isShowCover = computed(() => {
+  return screenWidth.value < 736 && isShowSideBar.value
 })
+// #endregion
 
 </script>
 
@@ -180,10 +224,9 @@ watch(screenWidth, (width) => {
   width: 100vw;
   height: 100vh;
   display: flex;
-  justify-content: space-between;
+  position: relative;
 
   #nav-menu {
-    z-index: 1;
     height: 100%;
 
 
@@ -218,9 +261,24 @@ watch(screenWidth, (width) => {
     }
   }
 
-  #content {
-    z-index: 0;
+  @media screen and (max-width: 736px) {
+    .nav-menu {
+      position: absolute;
+      z-index: 2;
+    }
+  }
+
+  #nav-menu-cover {
+    position: absolute;
+    z-index: 1;
     width: 100%;
+    height: 100%;
+    background: #000000;
+    opacity: 0.5;
+  }
+
+  #content {
+    flex-grow: 1;
     height: 100%;
     background: #f4f6f9;
     align-content: flex-start;
