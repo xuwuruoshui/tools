@@ -216,7 +216,17 @@ let isShowCover = computed(() => {
   return screenWidth.value < 736 && isShowSideBar.value
 })
 // #endregion
-
+onMounted(()=>{
+  if (screenWidth.value < 736) {
+    isShowSideBar.value = false
+  } else if (screenWidth.value > 736 && screenWidth.value <= 992) {
+    isShowSideBar.value = true
+    isCollapse.value = true
+  }else if(screenWidth.value>992){
+    isShowSideBar.value = true
+    isCollapse.value = false
+  }
+})
 </script>
 
 <style lang="scss" scoped>
