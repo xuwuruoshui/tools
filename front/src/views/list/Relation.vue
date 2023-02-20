@@ -1,59 +1,283 @@
 <template>
-  <div>
-    <div style="height:calc(100vh - 50px);">
-      <RelationGraph ref="seeksRelationGraph" :options="graphOptions" :on-node-click="onNodeClick" :on-line-click="onLineClick" />
-    </div>
-  </div>
+  <div ref="chartRef" style="height: 500px;"></div>
 </template>
 
-<script>
-import RelationGraph from 'relation-graph'
-export default {
-  name: 'Demo',
-  components: { RelationGraph },
-  data() {
-    return {
-      graphOptions: {
-        allowSwitchLineShape: true,
-        allowSwitchJunctionPoint: true,
-        defaultJunctionPoint: 'border'
-        // 这里可以参考"Graph 图谱"中的参数进行设置:http://relation-graph.com/#/docs/graph
-      }
-    }
-  },
-  mounted() {
-    this.showSeeksGraph()
-  },
-  methods: {
-    showSeeksGraph() {
-      var __graph_json_data = {
-        rootId: 'a',
-        nodes: [
-          // node配置选项：http://relation-graph.com/#/docs/node
-          // node支持通过插槽slot完全自定义，示例：http://relation-graph.com/#/demo/adv-slot
-          { id: 'a', text: 'A', borderColor: 'yellow' },
-          { id: 'b', text: 'B', color: '#43a2f1', fontColor: 'yellow' },
-          { id: 'c', text: 'C', nodeShape: 1, width: 80, height: 60 },
-          { id: 'e', text: 'E', nodeShape: 0, width: 150, height: 150 }
+<script setup lang="ts">
+import * as echarts from 'echarts';
+import imag1 from '@/assets/a.png';
+import {onMounted, ref} from "vue";
+
+const chartRef = ref()
+
+
+const createChart = () => {
+  const chart = echarts.init(chartRef.value);
+
+  const option: any = {
+    title: {
+      text: "",
+    },
+    tooltip: {},
+    animationDurationUpdate: 1500,
+    animationEasingUpdate: "quinticInOut",
+    label: {
+      normal: {
+        show: true,
+        textStyle: {
+          fontSize: 12,
+        },
+      },
+    },
+    legend: {
+      x: "center",
+      show: false,
+      data: ["夫妻", "战友", "亲戚"],
+    },
+    series: [
+      {
+        type: "graph",
+        layout: "force",
+        symbolSize: 45,
+        focusNodeAdjacency: true,
+        roam: true,
+        categories: [
+          {
+            name: "夫妻",
+            itemStyle: {
+              normal: {
+                color: "#009800",
+              },
+            },
+          },
+          {
+            name: "战友",
+            itemStyle: {
+              normal: {
+                color: "#4592FF",
+              },
+            },
+          },
+          {
+            name: "亲戚",
+            itemStyle: {
+              normal: {
+                color: "#3592F",
+              },
+            },
+          },
         ],
-        lines: [
-          // link配置选项：http://relation-graph.com/#/docs/link
-          { from: 'a', to: 'b', text: '关系1', color: '#43a2f1' },
-          { from: 'a', to: 'c', text: '关系2' },
-          { from: 'a', to: 'e', text: '关系3' },
-          { from: 'b', to: 'e', color: '#67C23A' }
-        ]
-      }
-      this.$refs.seeksRelationGraph.setJsonData(__graph_json_data, (seeksRGGraph) => {
-        // Called when the relation-graph is completed
-      })
-    },
-    onNodeClick(nodeObject, $event) {
-      console.log('onNodeClick:', nodeObject)
-    },
-    onLineClick(linkObject, $event) {
-      console.log('onLineClick:', linkObject)
-    }
-  }
-}
+        label: {
+          show: true,
+          position: 'bottom',
+          distance: 5,
+          color: '#333',
+          fontFamily: 'sans-serif',
+          fontSize: 14,
+          fontWeight: 'bold',
+          formatter: '{b}',
+        },
+        force: {
+          repulsion: 1000,
+        },
+        edgeSymbolSize: [4, 50],
+        edgeLabel: {
+          normal: {
+            show: true,
+            textStyle: {
+              fontSize: 10,
+            },
+            formatter: "{c}",
+          },
+        },
+        data: [
+          {
+            id: "111",
+            name: "徐贱云",
+            draggable: true,
+            symbol: `image://${imag1}`,
+            symbolSize: [40, 40],
+            itemStyle: {
+              normal: {
+                borderColor: '#fff',
+                borderWidth: 2,
+                borderType: 'solid',
+                shadowColor: '#ccc',
+                shadowBlur: 5,
+                shadowOffsetX: 0,
+                shadowOffsetY: 5,
+                color: '#fff',
+              },
+            }
+          },
+          {
+            name: "冯可梁",
+            category: 1,
+            draggable: true,
+          },
+          {
+            name: "邓志荣",
+            category: 1,
+            draggable: true,
+          },
+          {
+            name: "李荣庆",
+            category: 1,
+            draggable: true,
+          },
+          {
+            name: "郑志勇",
+            category: 1,
+            draggable: true,
+          },
+          {
+            name: "赵英杰",
+            category: 1,
+            draggable: true,
+          },
+          {
+            name: "王承军",
+            category: 1,
+            draggable: true,
+          },
+          {
+            name: "陈卫东",
+            category: 1,
+            draggable: true,
+          },
+          {
+            name: "邹劲松",
+            category: 1,
+            draggable: true,
+          },
+          {
+            name: "赵成",
+            category: 1,
+            draggable: true,
+          },
+          {
+            name: "陈现忠",
+            category: 1,
+            draggable: true,
+          },
+          {
+            name: "陶泳",
+            category: 1,
+            draggable: true,
+          },
+          {
+            name: "王德福",
+            category: 1,
+            draggable: true,
+          },
+        ],
+        links: [
+          {
+            source: 0,
+            target: 1,
+            category: 0,
+            value: "夫妻",
+          },
+          {
+            source: 0,
+            target: 2,
+            value: "子女",
+          },
+          {
+            source: 0,
+            target: 3,
+            value: "夫妻",
+          },
+          {
+            source: 0,
+            target: 4,
+            value: "父母",
+          },
+          {
+            source: 0,
+            target: 5,
+            value: "朋友",
+          },
+          {
+            source: 1,
+            target: 2,
+            value: "表亲",
+          },
+          {
+            source: 4,
+            target: 5,
+            value: "朋友",
+          },
+          {
+            source: 2,
+            target: 8,
+            value: "叔叔",
+          },
+          {
+            source: 0,
+            target: 12,
+            value: "朋友",
+          },
+          {
+            source: 6,
+            target: 11,
+            value: "爱人",
+          },
+          {
+            source: 6,
+            target: 3,
+            value: "朋友",
+          },
+          {
+            source: 7,
+            target: 5,
+            value: "朋友",
+          },
+          {
+            source: 9,
+            target: 10,
+            value: "朋友",
+          },
+          {
+            source: 3,
+            target: 10,
+            value: "朋友",
+          },
+          {
+            source: 2,
+            target: 11,
+            value: "同学",
+          },
+        ],
+        lineStyle: {
+          normal: {
+            opacity: 0.9,
+            width: 1,
+            curveness: 0,
+          },
+        },
+      },
+    ],
+  };
+
+
+  chart.setOption(option);
+  chart.on('click', function (params) {
+    console.log(params);
+  });
+};
+
+
+onMounted(() => {
+  createChart();
+});
+
+
 </script>
+
+<style scoped lang="scss">
+.echarts-sym-image > img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+</style>

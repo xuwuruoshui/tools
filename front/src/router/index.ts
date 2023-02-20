@@ -42,7 +42,7 @@ const router = createRouter({
                 },{
                     path:'/relation',
                     name: 'relation',
-                    component: ()=>import('../views/list/Relation.vue')
+                    component: ()=>import('../views/list/Relation1.vue')
                 }
             ]
         },

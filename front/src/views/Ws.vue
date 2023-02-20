@@ -60,9 +60,9 @@ function reconnect(url:string) {
   timeConnect++;
   console.log("第" + timeConnect + "次重连");
   // 进行重连
-  setTimeout(function () {
-    webSocketInit(url);
-  }, 1000);
+  // setTimeout(function () {
+  //   webSocketInit(url);
+  // }, 1000);
 
 }
 
