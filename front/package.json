@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --mode development",
     "build": "run-p type-check build-only",
     "preview": "vite preview",
     "test:unit": "vitest --environment jsdom --root src/",
@@ -15,9 +15,13 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.0.10",
+    "animate.css": "^4.1.1",
     "axios": "^1.2.2",
     "echarts": "^5.4.1",
     "element-plus": "^2.2.28",
+    "gsap": "^3.11.4",
+    "lodash": "^4.17.21",
+    "mitt": "^3.0.0",
     "pdfjs-dist": "^2.0.943",
     "pinia": "^2.0.28",
     "sass": "^1.57.1",
@@ -29,6 +33,7 @@
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
     "@types/jsdom": "^20.0.1",
+    "@types/lodash": "^4.14.191",
     "@types/node": "^18.11.12",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vitejs/plugin-vue-jsx": "^3.0.0",

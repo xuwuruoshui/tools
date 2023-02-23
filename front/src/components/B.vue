@@ -1,14 +1,11 @@
 <template>
-  <div>
-    <h1>B组件</h1>
-    <input type="text">
-  </div>
+  <h1>B组件</h1>
+  <div>{{msg}}</div>
 </template>
-<script>
-export default {
-  name: "B"
-}
-</script>
+
 <script setup lang="ts">
 
 </script>
+<style lang="scss" scoped>
+
+</style>
